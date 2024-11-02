@@ -1,2 +1,2 @@
 # WGMI Exchange
-Wgmi is a
+Wgmi is a NFT Marketpalce and No-Code Launchpad
