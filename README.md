@@ -8,5 +8,5 @@ We are thrilled to have received a grant to build on the Aptos Blockchain, furth
 ## 🚧 Development Status
 Currently, we're in development and targeting a launch by Q4 this year.
 
-## 📱 Connect with Us
+## 📱 Socials
 Follow us on [X (Twitter)](https://x.com/wgmiexchange) for updates, news, and announcements.
