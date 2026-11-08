@@ -2,13 +2,13 @@
 <title>Tech stack: TypeScript, JavaScript, Python, Solidity, Move, React, Next.js, Tailwind CSS</title>
 <style>
   text { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif; }
-  .title { fill: #f4f7fb; font-size: 16px; font-weight: 600; }
+  .title { fill: #fbf1e7; font-size: 16px; font-weight: 600; }
   .value { font-size: 30px; font-weight: 700; }
-  .label { fill: #a9b4c8; font-size: 13px; }
-  .name { fill: #e6ebf3; font-size: 14px; }
-  .pct { fill: #a9b4c8; font-size: 14px; }
-  .axis { fill: #8f9bb3; font-size: 11px; }
-  .chip { fill: #e6ebf3; font-size: 13px; font-weight: 500; }
+  .label { fill: #c9b3a1; font-size: 13px; }
+  .name { fill: #f3e3d3; font-size: 14px; }
+  .pct { fill: #c9b3a1; font-size: 14px; }
+  .axis { fill: #a99280; font-size: 11px; }
+  .chip { fill: #f3e3d3; font-size: 13px; font-weight: 500; }
   .grow { transform-box: fill-box; transform-origin: left center; animation: grow 1.1s cubic-bezier(.2,.8,.2,1) both; }
   .fade { animation: fade 1.2s ease-out both; }
   @keyframes grow { from { transform: scaleX(0); } }
@@ -16,11 +16,11 @@
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
 </style>
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1020"/><stop offset="1" stop-color="#101729"/></linearGradient>
-  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2ff3b0"/><stop offset=".55" stop-color="#4cc9ff"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
-  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2ff3b0" stop-opacity=".55"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#a78bfa" stop-opacity=".55"/></linearGradient>
-  <radialGradient id="glowA"><stop offset="0" stop-color="#2ff3b0" stop-opacity=".2"/><stop offset="1" stop-color="#2ff3b0" stop-opacity="0"/></radialGradient>
-  <radialGradient id="glowB"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".28"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#160f0b"/><stop offset="1" stop-color="#22160f"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".55"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#b4623a" stop-opacity=".55"/></linearGradient>
+  <radialGradient id="glowA"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".2"/><stop offset="1" stop-color="#f4c7a1" stop-opacity="0"/></radialGradient>
+  <radialGradient id="glowB"><stop offset="0" stop-color="#8a4526" stop-opacity=".28"/><stop offset="1" stop-color="#8a4526" stop-opacity="0"/></radialGradient>
   <filter id="soft" x="-20%" y="-150%" width="140%" height="400%"><feGaussianBlur stdDeviation="4"/></filter>
 </defs>
 <clipPath id="frame"><rect x="1" y="1" width="638" height="156" rx="16"/></clipPath>

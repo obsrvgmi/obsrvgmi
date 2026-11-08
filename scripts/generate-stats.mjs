@@ -101,13 +101,13 @@ const WIDTH = 640;
 
 const STYLE = `<style>
   text { font-family: ${FONT}; }
-  .title { fill: #f4f7fb; font-size: 16px; font-weight: 600; }
+  .title { fill: #fbf1e7; font-size: 16px; font-weight: 600; }
   .value { font-size: 30px; font-weight: 700; }
-  .label { fill: #a9b4c8; font-size: 13px; }
-  .name { fill: #e6ebf3; font-size: 14px; }
-  .pct { fill: #a9b4c8; font-size: 14px; }
-  .axis { fill: #8f9bb3; font-size: 11px; }
-  .chip { fill: #e6ebf3; font-size: 13px; font-weight: 500; }
+  .label { fill: #c9b3a1; font-size: 13px; }
+  .name { fill: #f3e3d3; font-size: 14px; }
+  .pct { fill: #c9b3a1; font-size: 14px; }
+  .axis { fill: #a99280; font-size: 11px; }
+  .chip { fill: #f3e3d3; font-size: 13px; font-weight: 500; }
   .grow { transform-box: fill-box; transform-origin: left center; animation: grow 1.1s cubic-bezier(.2,.8,.2,1) both; }
   .fade { animation: fade 1.2s ease-out both; }
   @keyframes grow { from { transform: scaleX(0); } }
@@ -116,11 +116,11 @@ const STYLE = `<style>
 </style>`;
 
 const DEFS = `<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1020"/><stop offset="1" stop-color="#101729"/></linearGradient>
-  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2ff3b0"/><stop offset=".55" stop-color="#4cc9ff"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
-  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2ff3b0" stop-opacity=".55"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#a78bfa" stop-opacity=".55"/></linearGradient>
-  <radialGradient id="glowA"><stop offset="0" stop-color="#2ff3b0" stop-opacity=".2"/><stop offset="1" stop-color="#2ff3b0" stop-opacity="0"/></radialGradient>
-  <radialGradient id="glowB"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".28"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#160f0b"/><stop offset="1" stop-color="#22160f"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".55"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#b4623a" stop-opacity=".55"/></linearGradient>
+  <radialGradient id="glowA"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".2"/><stop offset="1" stop-color="#f4c7a1" stop-opacity="0"/></radialGradient>
+  <radialGradient id="glowB"><stop offset="0" stop-color="#8a4526" stop-opacity=".28"/><stop offset="1" stop-color="#8a4526" stop-opacity="0"/></radialGradient>
   <filter id="soft" x="-20%" y="-150%" width="140%" height="400%"><feGaussianBlur stdDeviation="4"/></filter>
 </defs>`;
 
@@ -149,27 +149,27 @@ function bannerSvg() {
   const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const stars = Array.from({ length: 46 }, (_, i) => {
     const twinkle = i % 5 === 0 ? ` class="tw" style="animation-delay:${(rand() * 4).toFixed(1)}s"` : "";
-    return `<circle cx="${(rand() * WIDTH).toFixed(1)}" cy="${(rand() * 240).toFixed(1)}" r="${(0.5 + rand() * 0.9).toFixed(1)}" fill="#fff" opacity="${(0.25 + rand() * 0.55).toFixed(2)}"${twinkle}/>`;
+    return `<circle cx="${(rand() * WIDTH).toFixed(1)}" cy="${(rand() * 240).toFixed(1)}" r="${(0.5 + rand() * 0.9).toFixed(1)}" fill="#ffe9d6" opacity="${(0.25 + rand() * 0.55).toFixed(2)}"${twinkle}/>`;
   }).join("");
 
   const [cx, cy] = [496, 120];
   const orbit = (cls, rx, ry, tilt, dotAt) => `<g class="${cls}"><g transform="rotate(${tilt} ${cx} ${cy})">
     <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="url(#accent)" stroke-opacity=".4"/>
-    <circle cx="${cx + rx * Math.cos(dotAt)}" cy="${cy + ry * Math.sin(dotAt)}" r="3.5" fill="#2ff3b0"/></g></g>`;
+    <circle cx="${cx + rx * Math.cos(dotAt)}" cy="${cy + ry * Math.sin(dotAt)}" r="3.5" fill="#f4c7a1"/></g></g>`;
 
   const body = `${stars}
 <text x="40" y="118" font-size="64" font-weight="700" letter-spacing="-1.5" fill="url(#accent)">observe</text>
-<text x="42" y="154" font-size="17" fill="#e6ebf3">${esc(TAGLINE[0])}</text>
-<text x="42" y="178" font-size="17" fill="#e6ebf3">${esc(TAGLINE[1])}</text>
+<text x="42" y="154" font-size="17" fill="#f3e3d3">${esc(TAGLINE[0])}</text>
+<text x="42" y="178" font-size="17" fill="#f3e3d3">${esc(TAGLINE[1])}</text>
 ${orbit("spinA", 112, 44, -24, 0.7)}
 ${orbit("spinB", 104, 36, 28, 3.9)}
 <circle cx="${cx}" cy="${cy}" r="62" fill="url(#glowA)"/>
-<path d="M${cx - 76} ${cy} Q${cx} ${cy - 66} ${cx + 76} ${cy} Q${cx} ${cy + 66} ${cx - 76} ${cy} Z" fill="#0b1020" fill-opacity=".85" stroke="url(#accent)" stroke-width="2.5" stroke-linejoin="round"/>
+<path d="M${cx - 76} ${cy} Q${cx} ${cy - 66} ${cx + 76} ${cy} Q${cx} ${cy + 66} ${cx - 76} ${cy} Z" fill="#160f0b" fill-opacity=".85" stroke="url(#accent)" stroke-width="2.5" stroke-linejoin="round"/>
 <circle class="iris" cx="${cx}" cy="${cy}" r="27" fill="url(#iris)"/>
-<circle cx="${cx}" cy="${cy}" r="11" fill="#0b1020"/>
-<circle cx="${cx + 7}" cy="${cy - 8}" r="4" fill="#fff" opacity=".9"/>`;
+<circle cx="${cx}" cy="${cy}" r="11" fill="#160f0b"/>
+<circle cx="${cx + 7}" cy="${cy - 8}" r="4" fill="#ffe9d6" opacity=".9"/>`;
 
-  const defs = `<defs><radialGradient id="iris"><stop offset="0" stop-color="#a78bfa"/><stop offset=".6" stop-color="#4cc9ff"/><stop offset="1" stop-color="#2ff3b0"/></radialGradient></defs>`;
+  const defs = `<defs><radialGradient id="iris"><stop offset="0" stop-color="#b4623a"/><stop offset=".6" stop-color="#d88a55"/><stop offset="1" stop-color="#f4c7a1"/></radialGradient></defs>`;
   const style = `<style>
   .spinA, .spinB { transform-origin: ${cx}px ${cy}px; animation: spin 48s linear infinite; }
   .spinB { animation-duration: 72s; animation-direction: reverse; }
@@ -204,7 +204,7 @@ function statsSvg(tiles, title) {
 </g>`;
     })
     .join("\n");
-  const defs = `<defs><linearGradient id="iconStroke" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="24"><stop offset="0" stop-color="#2ff3b0"/><stop offset="1" stop-color="#4cc9ff"/></linearGradient></defs>`;
+  const defs = `<defs><linearGradient id="iconStroke" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="24"><stop offset="0" stop-color="#f4c7a1"/><stop offset="1" stop-color="#d88a55"/></linearGradient></defs>`;
   return card(136, title, body, defs);
 }
 
@@ -261,14 +261,14 @@ ${grid}${labels}
 <g class="fade">
   <path d="${area}" fill="url(#areaFill)"/>
   <path d="${curve(full)}" fill="none" stroke="url(#lineStroke)" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="${curve(partial)}" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 6"/>
-  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="9" fill="#2ff3b0" opacity=".25"/>
-  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="4.5" fill="#2ff3b0" stroke="#0b1020" stroke-width="2"/>
+  <path d="${curve(partial)}" fill="none" stroke="#b4623a" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 6"/>
+  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="9" fill="#f4c7a1" opacity=".25"/>
+  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="4.5" fill="#f4c7a1" stroke="#160f0b" stroke-width="2"/>
   <text class="name" x="${peakPoint.x}" y="${peakPoint.y - 15}" text-anchor="${peakAnchor}" font-weight="600">${num(peakPoint.total)}</text>
 </g>`;
   const defs = `<defs>
-  <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4cc9ff" stop-opacity=".4"/><stop offset="1" stop-color="#4cc9ff" stop-opacity="0"/></linearGradient>
-  <linearGradient id="lineStroke" gradientUnits="userSpaceOnUse" x1="${left}" y1="0" x2="${right}" y2="0"><stop offset="0" stop-color="#2ff3b0"/><stop offset=".55" stop-color="#4cc9ff"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+  <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d88a55" stop-opacity=".4"/><stop offset="1" stop-color="#d88a55" stop-opacity="0"/></linearGradient>
+  <linearGradient id="lineStroke" gradientUnits="userSpaceOnUse" x1="${left}" y1="0" x2="${right}" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient>
 </defs>`;
   return card(bottom + 38, title, body, defs);
 }
@@ -298,9 +298,9 @@ function contactSvg(handle) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${esc(`Follow ${handle} on X`)}">
 <title>${esc(`Follow ${handle} on X`)}</title>
 <style>text { font-family: ${FONT}; }</style>
-<defs><linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2ff3b0"/><stop offset=".55" stop-color="#4cc9ff"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
-<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="21" fill="#0b1020" stroke="url(#accent)" stroke-width="1.5"/>
-<text x="${w / 2}" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#f4f7fb">Follow ${esc(handle)} on X</text>
+<defs><linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient></defs>
+<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="21" fill="#160f0b" stroke="url(#accent)" stroke-width="1.5"/>
+<text x="${w / 2}" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#fbf1e7">Follow ${esc(handle)} on X</text>
 </svg>
 `;
 }
