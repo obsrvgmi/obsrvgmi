@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 108" width="640" height="108" role="img" aria-label="GitHub stats: 551 2026 contributions, 653 total contributions, 64 repositories, 16 languages">
+<title>GitHub stats: 551 2026 contributions, 653 total contributions, 64 repositories, 16 languages</title>
+<style>
+  text { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif; }
+  .card { fill: #ffffff; stroke: #d0d7de; }
+  .title { fill: #1f2328; font-size: 16px; font-weight: 600; }
+  .value { fill: #1f2328; font-size: 30px; font-weight: 600; }
+  .label { fill: #59636e; font-size: 13px; }
+  .name { fill: #1f2328; font-size: 14px; }
+  .pct { fill: #59636e; font-size: 14px; }
+  .bar { fill: #1f6feb; }
+  .track { fill: #eff2f5; }
+  .rule { stroke: #d0d7de; }
+  @media (prefers-color-scheme: dark) {
+    .card { fill: #0d1117; stroke: #30363d; }
+    .title, .value, .name { fill: #f0f6fc; }
+    .label, .pct { fill: #9198a1; }
+    .bar { fill: #4493f8; }
+    .track { fill: #21262d; }
+    .rule { stroke: #30363d; }
+  }
+</style>
+<rect class="card" x="0.5" y="0.5" width="639" height="107" rx="8"/>
+<text class="value" x="24" y="54">551</text><text class="label" x="24" y="78">2026 contributions</text>
+<line class="rule" x1="160" x2="160" y1="24" y2="84"/><text class="value" x="184" y="54">653</text><text class="label" x="184" y="78">Total contributions</text>
+<line class="rule" x1="320" x2="320" y1="24" y2="84"/><text class="value" x="344" y="54">64</text><text class="label" x="344" y="78">Repositories</text>
+<line class="rule" x1="480" x2="480" y1="24" y2="84"/><text class="value" x="504" y="54">16</text><text class="label" x="504" y="78">Languages</text>
+</svg>

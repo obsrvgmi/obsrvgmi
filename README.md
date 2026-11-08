@@ -1,36 +1,19 @@
 # observe
 
-Just observing, and building a few things along the way: product prototypes for onchain payments, and tools for AI agents.
+Developer building web apps and onchain products, mostly with TypeScript, React and Next.js.
 
-## Projects
+## GitHub stats
 
-### [Gateway](https://github.com/obsrvgmi/gateway)
+<img src="assets/stats.svg" alt="GitHub stats: 551 2026 contributions, 653 total contributions, 64 repositories, 16 languages" width="100%">
 
-Accept any crypto and get paid in the asset you want. A clickable prototype of a payment gateway, with payment links, an embeddable checkout and a merchant dashboard. Settlement is designed around NEAR Intents and simulated in the browser, so no real funds move.
+<img src="assets/languages.svg" alt="Most used languages: TypeScript 57.2%, Solidity 17.8%, JavaScript 13.3%, CSS 4.9%, Python 3.8%, Move 1.6%, Other 1.4%" width="100%">
 
-<a href="https://github.com/obsrvgmi/gateway">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/obsrvgmi/gateway/main/.github/assets/landing-dark.jpg">
-    <img alt="Gateway landing page: a live checkout card between a column of pay assets and the asset the merchant receives" src="https://raw.githubusercontent.com/obsrvgmi/gateway/main/.github/assets/landing-light.jpg">
-  </picture>
-</a>
+<sub>Totals include private repositories. Languages are measured by code size.</sub>
 
-### [Fido](https://github.com/obsrvgmi/fido)
+## Tech
 
-Your business runs. Payroll runs itself. A front-end prototype of employee management and private onchain payroll on NEAR, with an admin dashboard and an employee pay portal.
+TypeScript · JavaScript · Python · Solidity · Move · React · Next.js · Tailwind CSS
 
-### [handwriting-to-font](https://github.com/obsrvgmi/handwriting-to-font)
-
-An agent skill that turns a photo of your handwriting into a real, installable font. Runs on your machine and is built on the open-source [draw-your-font](https://github.com/danilo-znamerovszkij/draw-your-font).
-
-```
-npx skills add obsrvgmi/handwriting-to-font
-```
-
-## Usually working with
-
-TypeScript, React, Next.js, Tailwind CSS and NEAR Intents.
-
-## Find me
+## Contact
 
 [X / Twitter: @obsrvgmi](https://x.com/obsrvgmi)
