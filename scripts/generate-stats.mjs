@@ -7,7 +7,9 @@ const token = process.env.GH_TOKEN;
 if (!token) throw new Error("GH_TOKEN is required");
 
 const TECH = ["TypeScript", "JavaScript", "Python", "Solidity", "Move", "React", "Next.js", "Tailwind CSS"];
-const TAGLINE = ["Developer building web apps", "and onchain products"];
+const NAME = "observe";
+const NOTE = "just observing";
+const TAGLINE = "Developer building web apps and onchain products";
 const HANDLE = "@obsrvgmi";
 
 // ---------- Data ----------
@@ -91,218 +93,191 @@ function lastTwelveMonths(days, now) {
   return months;
 }
 
-// ---------- Shared drawing ----------
+// ---------- Design tokens ----------
+// Follows the copper design system: copper on neutral, used sparingly; hairlines instead of
+// glows; pixel type for the signature and numbers; still at rest, with no looping motion.
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const num = (n) => n.toLocaleString("en-US");
 const formatPct = (pct) => (pct < 0.1 ? "<0.1%" : `${pct.toFixed(1)}%`);
-const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif";
-const WIDTH = 640;
+const WIDTH = 582;
 
-const STYLE = `<style>
-  text { font-family: ${FONT}; }
-  .title { fill: #fbf1e7; font-size: 16px; font-weight: 600; }
-  .value { font-size: 30px; font-weight: 700; }
-  .label { fill: #c9b3a1; font-size: 13px; }
-  .name { fill: #f3e3d3; font-size: 14px; }
-  .pct { fill: #c9b3a1; font-size: 14px; }
-  .axis { fill: #a99280; font-size: 11px; }
-  .chip { fill: #f3e3d3; font-size: 13px; font-weight: 500; }
-  .grow { transform-box: fill-box; transform-origin: left center; animation: grow 1.1s cubic-bezier(.2,.8,.2,1) both; }
-  .fade { animation: fade 1.2s ease-out both; }
-  @keyframes grow { from { transform: scaleX(0); } }
-  @keyframes fade { from { opacity: 0; } }
+const FONT_FILES = {
+  pixel: ["Geist Pixel", 400, "pixel"],
+  mono: ["Geist Mono", 400, "mono"],
+  regular: ["Funnel Display", 400, "display-regular"],
+  medium: ["Funnel Display", 500, "display-medium"],
+};
+
+function fontFaces(names) {
+  return names
+    .map((key) => {
+      const [family, weight, file] = FONT_FILES[key];
+      const data = readFileSync(`assets/fonts/${file}.woff2`).toString("base64");
+      return `@font-face { font-family: "${family}"; font-weight: ${weight}; src: url(data:font/woff2;base64,${data}) format("woff2"); }`;
+    })
+    .join("\n");
+}
+
+const STYLE = `
+  svg { --page: #fff; --well: #f2f2f3; --raised: #fff; --ink: #18181b; --ink-2: #5d5d66; --ink-3: #6b6b73;
+        --line: #00000012; --line-strong: #00000029; --accent: #d95f35; --cover: #a94a2c; --hatch: #00000024; }
+  @media (prefers-color-scheme: dark) {
+    svg { --page: #121212; --well: #1b1b1e; --raised: #1f1f22; --ink: #fafafa; --ink-2: #a8a8ad; --ink-3: #8b8b92;
+          --line: #ffffff14; --line-strong: #ffffff2e; --accent: #ee7446; --cover: #6e2f1d; --hatch: #ffffff33; }
+  }
+  text { font-family: "Funnel Display", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; font-variant-numeric: tabular-nums; }
+  .pixel { font-family: "Geist Pixel", ui-monospace, Menlo, monospace; }
+  .mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+  .card { fill: var(--raised); stroke: var(--line-strong); }
+  .page { fill: var(--page); stroke: var(--line-strong); }
+  .well { fill: var(--well); }
+  .cover { fill: var(--cover); }
+  .mark, .accent { fill: var(--accent); }
+  .rule { stroke: var(--line); }
+  .ink { fill: var(--ink); }
+  .ink-2 { fill: var(--ink-2); }
+  .ink-3 { fill: var(--ink-3); }
+  .cream { fill: #fff4ea; }
+  .title { fill: var(--ink); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .count { fill: var(--ink-3); font-size: 11px; }
+  .note { fill: var(--ink-3); font-size: 12px; }
+  .value { fill: var(--ink); font-size: 28px; }
+  .label { fill: var(--ink-3); font-size: 12px; }
+  .name { fill: var(--ink); font-size: 14px; }
+  .bar { fill: var(--line-strong); }
+  .neutral { fill: var(--ink-3); }
+  .chip { fill: var(--well); stroke: var(--line); }
+  .hatch { stroke: var(--hatch); }
+  .reveal { animation: reveal 0.7s cubic-bezier(.23, 1, .32, 1) both; }
+  @keyframes reveal { from { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
-</style>`;
+`;
 
-const DEFS = `<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#160f0b"/><stop offset="1" stop-color="#22160f"/></linearGradient>
-  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient>
-  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".55"/><stop offset=".5" stop-color="#ffffff" stop-opacity=".08"/><stop offset="1" stop-color="#b4623a" stop-opacity=".55"/></linearGradient>
-  <radialGradient id="glowA"><stop offset="0" stop-color="#f4c7a1" stop-opacity=".2"/><stop offset="1" stop-color="#f4c7a1" stop-opacity="0"/></radialGradient>
-  <radialGradient id="glowB"><stop offset="0" stop-color="#8a4526" stop-opacity=".28"/><stop offset="1" stop-color="#8a4526" stop-opacity="0"/></radialGradient>
-  <filter id="soft" x="-20%" y="-150%" width="140%" height="400%"><feGaussianBlur stdDeviation="4"/></filter>
-</defs>`;
-
-function card(height, title, body, extraDefs = "", extraStyle = "") {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${height}" width="${WIDTH}" height="${height}" role="img" aria-label="${esc(title)}">
+function svgDoc(width, height, title, fonts, body) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(title)}">
 <title>${esc(title)}</title>
-${STYLE}${extraStyle}
-${DEFS}${extraDefs}
-<clipPath id="frame"><rect x="1" y="1" width="${WIDTH - 2}" height="${height - 2}" rx="16"/></clipPath>
-<g clip-path="url(#frame)">
-  <rect width="${WIDTH}" height="${height}" fill="url(#bg)"/>
-  <ellipse cx="60" cy="0" rx="260" ry="${Math.max(120, height * 0.7)}" fill="url(#glowA)"/>
-  <ellipse cx="${WIDTH - 40}" cy="${height}" rx="280" ry="${Math.max(130, height * 0.8)}" fill="url(#glowB)"/>
-</g>
-<rect x="1" y="1" width="${WIDTH - 2}" height="${height - 2}" rx="16" fill="none" stroke="url(#edge)" stroke-width="1.5"/>
+<style>${fontFaces(fonts)}${STYLE}</style>
 ${body}
 </svg>
 `;
 }
 
+// A section card: copper square, name, raised count, note at the right, then the content.
+function section(height, title, name, { count, note, fonts = [] }, body) {
+  const raised = count === undefined ? "" : `<tspan class="count" dx="4" dy="-6">${esc(count)}</tspan>`;
+  const head = `<rect class="mark" x="24" y="24" width="6" height="6" rx="1.5"/>
+<text class="title" x="38" y="33">${esc(name)}${raised}</text>
+${note ? `<text class="note pixel" x="${WIDTH - 24}" y="32" text-anchor="end">${esc(note)}</text>` : ""}`;
+  const frame = `<rect class="card" x="0.5" y="0.5" width="${WIDTH - 1}" height="${height - 1}" rx="14"/>`;
+  return svgDoc(WIDTH, height, title, ["medium", "regular", "pixel", ...fonts], `${frame}\n${head}\n<g class="reveal">${body}</g>`);
+}
+
 // ---------- Cards ----------
 
 function bannerSvg() {
-  // Fixed seed, so the star field does not change between runs.
-  let seed = 7;
-  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  const stars = Array.from({ length: 46 }, (_, i) => {
-    const twinkle = i % 5 === 0 ? ` class="tw" style="animation-delay:${(rand() * 4).toFixed(1)}s"` : "";
-    return `<circle cx="${(rand() * WIDTH).toFixed(1)}" cy="${(rand() * 240).toFixed(1)}" r="${(0.5 + rand() * 0.9).toFixed(1)}" fill="#ffe9d6" opacity="${(0.25 + rand() * 0.55).toFixed(2)}"${twinkle}/>`;
-  }).join("");
-
-  const [cx, cy] = [496, 120];
-  const orbit = (cls, rx, ry, tilt, dotAt) => `<g class="${cls}"><g transform="rotate(${tilt} ${cx} ${cy})">
-    <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="url(#accent)" stroke-opacity=".4"/>
-    <circle cx="${cx + rx * Math.cos(dotAt)}" cy="${cy + ry * Math.sin(dotAt)}" r="3.5" fill="#f4c7a1"/></g></g>`;
-
-  const body = `${stars}
-<text x="40" y="118" font-size="64" font-weight="700" letter-spacing="-1.5" fill="url(#accent)">observe</text>
-<text x="42" y="154" font-size="17" fill="#f3e3d3">${esc(TAGLINE[0])}</text>
-<text x="42" y="178" font-size="17" fill="#f3e3d3">${esc(TAGLINE[1])}</text>
-${orbit("spinA", 112, 44, -24, 0.7)}
-${orbit("spinB", 104, 36, 28, 3.9)}
-<circle cx="${cx}" cy="${cy}" r="62" fill="url(#glowA)"/>
-<path d="M${cx - 76} ${cy} Q${cx} ${cy - 66} ${cx + 76} ${cy} Q${cx} ${cy + 66} ${cx - 76} ${cy} Z" fill="#160f0b" fill-opacity=".85" stroke="url(#accent)" stroke-width="2.5" stroke-linejoin="round"/>
-<circle class="iris" cx="${cx}" cy="${cy}" r="27" fill="url(#iris)"/>
-<circle cx="${cx}" cy="${cy}" r="11" fill="#160f0b"/>
-<circle cx="${cx + 7}" cy="${cy - 8}" r="4" fill="#ffe9d6" opacity=".9"/>`;
-
-  const defs = `<defs><radialGradient id="iris"><stop offset="0" stop-color="#b4623a"/><stop offset=".6" stop-color="#d88a55"/><stop offset="1" stop-color="#f4c7a1"/></radialGradient></defs>`;
-  const style = `<style>
-  .spinA, .spinB { transform-origin: ${cx}px ${cy}px; animation: spin 48s linear infinite; }
-  .spinB { animation-duration: 72s; animation-direction: reverse; }
-  .iris { transform-origin: ${cx}px ${cy}px; animation: pulse 6s ease-in-out infinite; }
-  .tw { animation: tw 4s ease-in-out infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes pulse { 50% { transform: scale(1.08); } }
-  @keyframes tw { 50% { opacity: .1; } }
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
-</style>`;
-  return card(240, `observe: ${TAGLINE.join(" ")}`, body, defs, style);
+  const coverHeight = 118;
+  const height = 226;
+  const body = `<defs>
+  <clipPath id="tile"><rect x="1" y="1" width="${WIDTH - 2}" height="${height - 2}" rx="20"/></clipPath>
+  <pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="1" class="cream"/></pattern>
+  <radialGradient id="bloom" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></radialGradient>
+  <mask id="field"><rect width="${WIDTH}" height="${coverHeight}" fill="url(#bloom)"/></mask>
+  <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+</defs>
+<rect class="page" x="0.5" y="0.5" width="${WIDTH - 1}" height="${height - 1}" rx="20"/>
+<g clip-path="url(#tile)">
+  <rect class="cover" width="${WIDTH}" height="${coverHeight}"/>
+  <rect width="${WIDTH}" height="${coverHeight}" filter="url(#grain)" opacity=".12"/>
+  <rect width="${WIDTH}" height="${coverHeight}" fill="url(#dots)" mask="url(#field)" class="reveal"/>
+</g>
+<text class="ink pixel" x="24" y="172" font-size="38">${esc(NAME)}</text>
+<text class="note pixel" x="${WIDTH - 24}" y="170" text-anchor="end">${esc(NOTE)}</text>
+<text class="ink-2" x="24" y="202" font-size="15">${esc(TAGLINE)}</text>`;
+  return svgDoc(WIDTH, height, `${NAME}: ${TAGLINE}`, ["regular", "pixel"], body);
 }
 
-const ICONS = {
-  bolt: `<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>`,
-  commit: `<circle cx="12" cy="12" r="4"/><path d="M2 12h6M16 12h6"/>`,
-  repo: `<path d="M5 18V5a2 2 0 0 1 2-2h12v18H7a2 2 0 0 1-2-2 2 2 0 0 1 2-2h12"/>`,
-  flame: `<path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-2 1-4 2-5 0 2 1 3 2 3 1-3 0-6 2-10z"/>`,
-};
-
-function statsSvg(tiles, title) {
+function statsSvg(tiles, firstYear, title) {
   const cell = WIDTH / tiles.length;
   const body = tiles
-    .map(({ value, label, icon }, i) => {
-      const x = cell * i + 20;
-      const rule = i ? `<line x1="${cell * i}" x2="${cell * i}" y1="24" y2="118" stroke="#ffffff" stroke-opacity=".08"/>` : "";
-      return `${rule}<g class="fade" style="animation-delay:${i * 0.12}s">
-  <rect x="${x}" y="20" width="32" height="32" rx="9" fill="#ffffff" fill-opacity=".06" stroke="url(#accent)" stroke-opacity=".5"/>
-  <g transform="translate(${x + 7} 27) scale(.75)" fill="none" stroke="url(#iconStroke)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[icon]}</g>
-  <text class="value" x="${x}" y="92" fill="url(#accent)">${esc(value)}</text>
-  <text class="label" x="${x}" y="114">${esc(label)}</text>
-</g>`;
+    .map(({ value, label }, i) => {
+      const x = cell * i + (i ? 16 : 24);
+      const rule = i ? `<line class="rule" x1="${cell * i}" x2="${cell * i}" y1="60" y2="118"/>` : "";
+      return `${rule}<text class="value pixel" x="${x}" y="88">${esc(value)}</text><text class="label" x="${x}" y="112">${esc(label)}</text>`;
     })
     .join("\n");
-  const defs = `<defs><linearGradient id="iconStroke" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="24"><stop offset="0" stop-color="#f4c7a1"/><stop offset="1" stop-color="#d88a55"/></linearGradient></defs>`;
-  return card(136, title, body, defs);
+  return section(138, title, "At a glance", { note: `since ${firstYear}` }, body);
 }
 
 function languagesSvg(rows, count, title) {
-  const rowHeight = 30;
-  const top = 64;
-  const [barX, barWidth, barHeight] = [132, 420, 10];
+  const rowHeight = 32;
+  const top = 52;
+  const [barX, barWidth, barHeight] = [128, 346, 4];
   const scale = Math.max(...rows.map((r) => r.pct));
   const body = rows
     .map(({ name, pct }, i) => {
       const y = top + i * rowHeight;
-      const w = Math.max(5, (pct / scale) * barWidth).toFixed(1);
-      const bar = `<rect x="${barX}" y="${y}" width="${w}" height="${barHeight}" rx="5" fill="url(#accent)"`;
-      return `<text class="name" x="24" y="${y + 10}">${esc(name)}</text>
-<rect x="${barX}" y="${y}" width="${barWidth}" height="${barHeight}" rx="5" fill="#ffffff" fill-opacity=".07"/>
-<g class="grow" style="animation-delay:${i * 0.08}s">${bar} filter="url(#soft)" opacity=".55"/>${bar}/></g>
-<text class="pct" x="${WIDTH - 24}" y="${y + 10}" text-anchor="end">${formatPct(pct)}</text>`;
+      const mid = y + rowHeight / 2;
+      const w = Math.max(4, (pct / scale) * barWidth).toFixed(1);
+      return `<line class="rule" x1="24" x2="${WIDTH - 24}" y1="${y}" y2="${y}"/>
+<text class="name" x="24" y="${mid + 5}">${esc(name)}</text>
+<rect class="well" x="${barX}" y="${mid - barHeight / 2}" width="${barWidth}" height="${barHeight}" rx="2"/>
+<rect class="${i === 0 ? "accent" : "neutral"}" x="${barX}" y="${mid - barHeight / 2}" width="${w}" height="${barHeight}" rx="2"/>
+<text class="ink-3 pixel" font-size="13" x="${WIDTH - 24}" y="${mid + 4}" text-anchor="end">${formatPct(pct)}</text>`;
     })
     .join("\n");
-  const heading = `<text class="title" x="24" y="38">Most used languages</text><text class="label" x="${WIDTH - 24}" y="38" text-anchor="end">${num(count)} languages in total</text>`;
-  return card(top + rows.length * rowHeight + 8, title, `${heading}\n${body}`);
+  return section(top + rows.length * rowHeight + 10, title, "Languages", { count: num(count), note: "by code size" }, body);
 }
 
 function activitySvg(months, title) {
-  const [left, right, top, bottom] = [40, WIDTH - 28, 88, 208];
+  const [left, right, top, bottom] = [24, WIDTH - 24, 82, 176];
+  const barWidth = 18;
   const peak = Math.max(1, ...months.map((m) => m.total));
-  const step = (right - left) / (months.length - 1);
-  const pts = months.map((m, i) => ({ x: left + i * step, y: bottom - (m.total / peak) * (bottom - top), ...m }));
-  const curve = (list) =>
-    list
-      .map((p, i) => {
-        if (!i) return `M${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
-        const a = list[i - 1];
-        const mid = ((a.x + p.x) / 2).toFixed(1);
-        return `C${mid} ${a.y.toFixed(1)} ${mid} ${p.y.toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
-      })
-      .join(" ");
-  const full = pts.slice(0, -1);
-  const partial = pts.slice(-2);
-  const area = `${curve(pts)} L${right} ${bottom} L${left} ${bottom} Z`;
-  const peakPoint = pts.reduce((a, b) => (b.total > a.total ? b : a));
-  const peakAnchor = peakPoint.x > WIDTH - 70 ? "end" : peakPoint.x < 70 ? "start" : "middle";
-
-  const grid = [0, 0.5, 1]
-    .map((f) => {
-      const y = bottom - f * (bottom - top);
-      return `<line x1="${left}" x2="${right}" y1="${y}" y2="${y}" stroke="#ffffff" stroke-opacity=".08"/><text class="axis" x="${left - 8}" y="${y + 4}" text-anchor="end">${num(Math.round(peak * f))}</text>`;
+  const peakIndex = months.findIndex((m) => m.total === peak);
+  const step = (right - left) / months.length;
+  const bars = months
+    .map((m, i) => {
+      const cx = left + step * (i + 0.5);
+      const h = Math.max(2, (m.total / peak) * (bottom - top));
+      const x = cx - barWidth / 2;
+      const y = bottom - h;
+      const r = Math.min(4, h);
+      const shape = `M${x} ${bottom}V${y + r}Q${x} ${y} ${x + r} ${y}H${x + barWidth - r}Q${x + barWidth} ${y} ${x + barWidth} ${y + r}V${bottom}Z`;
+      const current = i === months.length - 1;
+      const cls = i === peakIndex ? "accent" : current ? "" : "bar";
+      const mark = current ? `<path d="${shape}" fill="url(#hatch)"/>` : `<path class="${cls}" d="${shape}"/>`;
+      const value = i === peakIndex ? `<text class="ink pixel" font-size="13" x="${cx}" y="${y - 8}" text-anchor="middle">${num(m.total)}</text>` : "";
+      return `${mark}${value}<text class="ink-3" font-size="12" x="${cx}" y="${bottom + 20}" text-anchor="middle">${esc(m.label)}</text>`;
     })
-    .join("");
-  const labels = pts.map((p) => `<text class="axis" x="${p.x}" y="${bottom + 20}" text-anchor="middle">${esc(p.label)}</text>`).join("");
-
-  const body = `<text class="title" x="24" y="38">Contributions, last 12 months</text>
-${grid}${labels}
-<g class="fade">
-  <path d="${area}" fill="url(#areaFill)"/>
-  <path d="${curve(full)}" fill="none" stroke="url(#lineStroke)" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="${curve(partial)}" fill="none" stroke="#b4623a" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 6"/>
-  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="9" fill="#f4c7a1" opacity=".25"/>
-  <circle cx="${peakPoint.x}" cy="${peakPoint.y}" r="4.5" fill="#f4c7a1" stroke="#160f0b" stroke-width="2"/>
-  <text class="name" x="${peakPoint.x}" y="${peakPoint.y - 15}" text-anchor="${peakAnchor}" font-weight="600">${num(peakPoint.total)}</text>
-</g>`;
-  const defs = `<defs>
-  <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d88a55" stop-opacity=".4"/><stop offset="1" stop-color="#d88a55" stop-opacity="0"/></linearGradient>
-  <linearGradient id="lineStroke" gradientUnits="userSpaceOnUse" x1="${left}" y1="0" x2="${right}" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient>
-</defs>`;
-  return card(bottom + 38, title, body, defs);
+    .join("\n");
+  const defs = `<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse"><path class="hatch" d="M-1 1l2-2M0 6l6-6M5 7l2-2" fill="none"/></pattern></defs>`;
+  const baseline = `<line class="rule" x1="${left}" x2="${right}" y1="${bottom}" y2="${bottom}"/>`;
+  return section(bottom + 38, title, "Contributions", { note: "last 12 months" }, `${defs}${baseline}\n${bars}`);
 }
 
 function techSvg(items) {
-  const [padX, gap, chipHeight, startY] = [14, 10, 34, 58];
-  const widthOf = (t) => Math.round(t.length * 7.6) + padX * 2 + 14;
+  const [padX, gap, chipHeight, startY] = [12, 8, 28, 52];
   let [x, y] = [24, startY];
   const chips = items.map((t) => {
-    const w = widthOf(t);
+    const w = Math.round(t.length * 7.8) + padX * 2;
     if (x + w > WIDTH - 24) {
       x = 24;
       y += chipHeight + gap;
     }
-    const chip = `<rect x="${x}" y="${y}" width="${w}" height="${chipHeight}" rx="17" fill="#ffffff" fill-opacity=".05" stroke="url(#accent)" stroke-opacity=".55"/>
-<circle cx="${x + padX + 2}" cy="${y + chipHeight / 2}" r="3.5" fill="url(#accent)"/>
-<text class="chip" x="${x + padX + 13}" y="${y + 22}">${esc(t)}</text>`;
+    const chip = `<rect class="chip" x="${x}" y="${y + 0.5}" width="${w}" height="${chipHeight}" rx="${chipHeight / 2}"/>
+<text class="ink-2 mono" font-size="13" x="${x + w / 2}" y="${y + 19}" text-anchor="middle">${esc(t)}</text>`;
     x += w + gap;
     return chip;
   });
-  const body = `<text class="title" x="24" y="38">Tech stack</text>\n${chips.join("\n")}`;
-  return card(y + chipHeight + 22, `Tech stack: ${items.join(", ")}`, body);
+  return section(y + chipHeight + 22, `Tools: ${items.join(", ")}`, "Tools", { count: num(items.length), fonts: ["mono"] }, chips.join("\n"));
 }
 
 function contactSvg(handle) {
-  const [w, h] = [190, 44];
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${esc(`Follow ${handle} on X`)}">
-<title>${esc(`Follow ${handle} on X`)}</title>
-<style>text { font-family: ${FONT}; }</style>
-<defs><linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f4c7a1"/><stop offset=".55" stop-color="#d88a55"/><stop offset="1" stop-color="#b4623a"/></linearGradient></defs>
-<rect x="1" y="1" width="${w - 2}" height="${h - 2}" rx="21" fill="#160f0b" stroke="url(#accent)" stroke-width="1.5"/>
-<text x="${w / 2}" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#fbf1e7">Follow ${esc(handle)} on X</text>
-</svg>
-`;
+  const [w, h] = [176, 36];
+  const label = `Follow ${handle} on X`;
+  const body = `<rect class="cover" width="${w}" height="${h}" rx="18"/>
+<text class="cream" x="${w / 2}" y="23" text-anchor="middle" font-size="13" font-weight="500">${esc(label)}</text>`;
+  return svgDoc(w, h, label, ["medium"], body);
 }
 
 // ---------- Build ----------
@@ -321,10 +296,10 @@ const { rows, count } = languageShares(repos);
 const months = lastTwelveMonths(days, now);
 
 const tiles = [
-  { value: num(thisYear), label: `${year} contributions`, icon: "bolt" },
-  { value: num(allTime), label: "Total contributions", icon: "commit" },
-  { value: num(repos.length), label: "Repositories", icon: "repo" },
-  { value: `${num(streak)} ${streak === 1 ? "day" : "days"}`, label: "Longest streak", icon: "flame" },
+  { value: num(thisYear), label: `${year} contributions` },
+  { value: num(allTime), label: "Total contributions" },
+  { value: num(repos.length), label: "Repositories" },
+  { value: `${num(streak)} ${streak === 1 ? "day" : "days"}`, label: "Longest streak" },
 ];
 const statsAlt = `GitHub stats: ${num(thisYear)} contributions in ${year}, ${num(allTime)} total contributions, ${num(repos.length)} repositories, longest streak ${num(streak)} days`;
 const langAlt = `Most used languages: ${rows.map((r) => `${r.name} ${formatPct(r.pct)}`).join(", ")}`;
@@ -332,7 +307,7 @@ const activityAlt = `Contributions per month, last 12 months: ${months.map((m) =
 
 mkdirSync("assets", { recursive: true });
 writeFileSync("assets/banner.svg", bannerSvg());
-writeFileSync("assets/stats.svg", statsSvg(tiles, statsAlt));
+writeFileSync("assets/stats.svg", statsSvg(tiles, days.find((d) => d.count > 0)?.date.slice(0, 4) ?? year, statsAlt));
 writeFileSync("assets/languages.svg", languagesSvg(rows, count, langAlt));
 writeFileSync("assets/activity.svg", activitySvg(months, activityAlt));
 writeFileSync("assets/tech.svg", techSvg(TECH));
